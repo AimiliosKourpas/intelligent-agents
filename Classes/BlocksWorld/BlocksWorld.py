@@ -3,60 +3,60 @@ from Classes.Problem import Problem
 
 class BlocksWorld(Problem):
     def __init__(self, initial, goal):
-        Problem.__init__(self, initial, goal)
-        self.initial = initial
-        self.goal = goal
+        super().__init__(initial, goal)
 
     def result(self, state, action):
-        # Method used to compute the resulting state based on a certain action and the current state and return it
-        # state - the current state
-        # action - action to be taken
-        state_list = list(state)
-        source_stack = action[0]
-        destination_stack = action[1]
-        moved_block = 0
-        for block in state_list[source_stack]:  # moved_block is the last block in stack
-            moved_block = block
-        if len(state[source_stack]) != 1:  # If moved_block is not the only block in its stack
-            new_stack = []
-            for iterator in range(len(state[source_stack])-1):
-                new_stack.append(state[source_stack][iterator])  # Copy the other blocks to another stack and
-            state_list.append(tuple(new_stack))  # Add them to the final list
+        """
+        Computes the resulting state based on a certain action and the current state.
+        :param state: the current state (tuple of tuples)
+        :param action: the action to be taken (source_stack, destination_stack)
+        :return: the resulting state (tuple of tuples)
+        """
+        state_list = [list(stack) for stack in state]
+        source_stack, destination_stack = action
 
-        if destination_stack != ' ':   # If the block is moved from one stack to another
-            state_list.remove(state[destination_stack])  # delete the old stack
-            state_list.append(state[destination_stack] + (moved_block, ))  # and then add the block to it
+        # Move the top block from the source stack
+        moved_block = state_list[source_stack].pop()
+
+        # Add the moved block to the destination stack
+        if destination_stack == ' ':
+            state_list.append([moved_block])
         else:
-            state_list.append((moved_block, ))  # Moving the block down means creating a new stack
-            # with only the block in it
+            state_list[destination_stack].append(moved_block)
 
-        state_list.remove(state[source_stack])  # Delete the old source stack
+        # Remove any empty stacks
+        state_list = [stack for stack in state_list if stack]
 
-        state_list.sort(key=lambda stack: len(stack))
-        return tuple(state_list)
+        # Sort the state list by the length of stacks to maintain consistency
+        state_list.sort(key=len)
+
+        return tuple(tuple(stack) for stack in state_list)
 
     def actions(self, state):
-        # A method which computes the possible actions to be taken in the current state and returns their list
-        # state - the current state
+        """
+        Computes the possible actions to be taken in the current state.
+        :param state: the current state (tuple of tuples)
+        :return: list of possible actions [(source_stack, destination_stack), ...]
+        """
         actions_list = []
-        for stack in state:
-
-            for other_stack in state:
-                if other_stack != stack:
-                    actions_list.append((state.index(stack), state.index(other_stack)))  # An action is represented as a
-                    # pair - first element represents the source stack index and the second the destination
-                    # stack index for the block movement
-
-            if len(stack) != 1:
-                actions_list.append((state.index(stack), ' '))  # A block can be moved down only if it's not
-                #  the only block in its stack, then the action would be redundant
-
+        num_stacks = len(state)
+        
+        for i, stack in enumerate(state):
+            if stack:
+                # Move block from stack i to another stack j
+                for j in range(num_stacks):
+                    if i != j:
+                        actions_list.append((i, j))
+                # Move block from stack i to a new stack (if it's not a single block stack)
+                if len(stack) > 1:
+                    actions_list.append((i, ' '))
+        
         return actions_list
 
     def goal_test(self, state):
-        # A method used to check whether the goal state of the problem has been reached based on the current state
-        # state - the current state
-        for stack in state:
-            if stack not in self.goal:
-                return False
-        return True
+        """
+        Checks whether the goal state has been reached based on the current state.
+        :param state: the current state (tuple of tuples)
+        :return: True if goal state is reached, False otherwise
+        """
+        return all(stack in self.goal for stack in state)

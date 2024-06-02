@@ -1,21 +1,25 @@
-# MENU
-#   -> ANSWERS
+# Constants for the menu and messages
 ALLOWED_ANSWERS = ["1", "2", "Q"]
 DEFAULT_ANSWER = "Q"
-#   -> MESSAGES
-MSG_SELECT_GAME = "Select problem:\n1- Water Pouring Puzzle\n2- Block World\nq- exit\nAnswer> "
 
-# WATER POURING PUZZLE
-#   -> INPUTS
-MSG_INPUT_1 = "Enter Jug 1 capacity> "
-MSG_INPUT_2 = "Enter Jug 2 capacity> "
-MSG_INPUT_TARGET = "Enter target Jug (1 or 2)> "
-#   -> MESSAGES
-MSG_FOUND_SOLUTION_WATER = "[!] Solution for water pouring problem [!]"
-MSG_NO_SOLUTION_WATER = "[X] No solution found for this combination [X]"
-MSG_NO_POSSIBLE_SOLUTION_WATER = "[X] No possible solution for this combination [X]"
+# Menu Messages
+MSG_SELECT_GAME = """
+Welcome to the Puzzle Solver!
+Please select a problem to solve:
+1 - Water Pouring Puzzle
+2 - Block World
+Q - Exit
+Your choice> """
 
-# SEARCH
-#   -> RBFS
+# Water Pouring Puzzle Inputs
+MSG_INPUT_1 = "Please enter the capacity of Jug 1: "
+MSG_INPUT_2 = "Please enter the capacity of Jug 2: "
+MSG_INPUT_TARGET = "Which jug should hold the target amount? (Enter 1 or 2): "
+
+# Water Pouring Puzzle Messages
+MSG_FOUND_SOLUTION_WATER = "[✔️] Solution found for the Water Pouring Puzzle!"
+MSG_NO_SOLUTION_WATER = "[X] No solution exists for this configuration."
+MSG_NO_POSSIBLE_SOLUTION_WATER = "[X] It is impossible to solve this configuration."
+
+# Search Constants
 INFINITY = float('inf')
-
