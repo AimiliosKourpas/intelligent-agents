@@ -6,6 +6,13 @@ from Utilities.Constants import MSG_FOUND_SOLUTION_WATER, MSG_NO_SOLUTION_WATER,
 
 
 def bfs(final_destination, jug_1_capacity, jug_2_capacity):
+    """
+    Perform a breadth-first search to solve the water pouring problem.
+    :param final_destination: The target amount of water to measure.
+    :param jug_1_capacity: The capacity of the first jug.
+    :param jug_2_capacity: The capacity of the second jug.
+    :return: A list of steps to reach the solution, or an empty list if no solution is found.
+    """
     final_path = []
     front = [(0, 0)]
     visited = set(front)
