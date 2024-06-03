@@ -7,9 +7,8 @@ from Utilities.Constants import MSG_FOUND_SOLUTION_WATER, MSG_NO_SOLUTION_WATER,
 
 def bfs(final_destination, jug_1_capacity, jug_2_capacity):
     final_path = []
-    front = [[0, 0]]
-    visited = set()
-    visited.add((0, 0))
+    front = [(0, 0)]
+    visited = set(front)
 
     while front:
         current = front.pop(0)
