@@ -4,7 +4,7 @@ DEFAULT_ANSWER = "Q"
 
 # Menu Messages
 MSG_SELECT_GAME = """
-Welcome to the Puzzle Solver!
+Welcome!
 Please select a problem to solve:
 1 - Water Pouring Puzzle
 2 - Block World
