@@ -1,69 +1,61 @@
 import functools
-import random
 from sys import exit
+from time import time
+from random import seed, randint
 
 
-def exit_program():
-    """Exit the program."""
+def _exit():
     print("Thank you for using our application.")
     exit()
 
 
 def gcd(a, b):
-    """Return the greatest common divisor of two numbers."""
-    while b:
-        a, b = b, a % b
-    return a
+    if a == 0:
+        return b
+    return gcd(b % a, a)
 
 
-def generate_random_state(number_of_blocks):
-    """
-    Generate a random state for the blocks world problem.
+def state_generator(number_of_blocks):
+    # A function which generates a random state for the blocks world problem
+    # number_of_blocks - the number of blocks of the problem
+    seed(time())  # initialize random seed using time method for more accurate randoms
+    no_of_stacks = randint(1, number_of_blocks)  # generate random number of stacks
+    state_list = []
+    iterator = no_of_stacks
 
-    Args:
-        number_of_blocks (int): The number of blocks of the problem.
+    while iterator >= 0:
+        state_list.append([-1, ])  # Add no_of_stacks "non-empty" lists to state_list
+        iterator = iterator - 1
 
-    Returns:
-        tuple: The generated state represented as a tuple of tuples.
-    """
-    random.seed()  # Seed the random number generator with system time
-    no_of_stacks = random.randint(1, number_of_blocks)  # Random number of stacks
-    state_list = [[] for _ in range(no_of_stacks)]  # Initialize stacks
+    for iterator in range(number_of_blocks):
+        stack_number = randint(0, no_of_stacks - 1)  # Add a random block to a random stack
+        state_list[stack_number].append(iterator)
+        if -1 in state_list[stack_number]:
+            state_list[stack_number].remove(-1)
 
-    for block_num in range(number_of_blocks):
-        stack_num = random.randint(0, no_of_stacks - 1)
-        state_list[stack_num].append(block_num)
+    generated_state = []
+    for stack in state_list:
+        if -1 not in stack:  # Tuples that remain "empty" (contain -1) are not added to the generated_state list
+            generated_state.append(tuple(stack))
 
-    # Convert to tuple of tuples, excluding empty stacks
-    return tuple(tuple(stack) for stack in state_list if stack)
-
-
-@functools.lru_cache(maxsize=32)
-def memoize(fn):
-    """
-    Memoize a function using LRU cache.
-
-    Args:
-        fn (function): The function to memoize.
-
-    Returns:
-        function: The memoized function.
-    """
-    return fn
+    return tuple(generated_state)  # Returning the list as a tuple
 
 
-# Example usage:
-if __name__ == "__main__":
-    print("GCD of 48 and 18:", gcd(48, 18))
-    print("Generated state with 5 blocks:", generate_random_state(5))
+def memoize(fn, slot=None, maxsize=32):
+    """Memoize fn: make it remember the computed value for any argument list.
+    If slot is specified, store result in that slot of first argument.
+    If slot is false, use lru_cache for caching the values."""
+    if slot:
+        def memoized_fn(obj, *args):
+            if hasattr(obj, slot):
+                return getattr(obj, slot)
+            else:
+                val = fn(obj, *args)
+                setattr(obj, slot, val)
+                return val
+    else:
+        @functools.lru_cache(maxsize=maxsize)
+        def memoized_fn(*args):
+            return fn(*args)
 
-    # Memoization example
-    @memoize
-    def fib(n):
-        if n < 2:
-            return n
-        return fib(n-1) + fib(n-2)
-
-    print("Fibonacci of 10:", fib(10))
-
-    exit_program()
+    return memoized_fn
