@@ -6,9 +6,9 @@ DEFAULT_ANSWER = "Q"
 MSG_SELECT_GAME = """
 Welcome!
 Please select a problem to solve:
-1 - Water Pouring Puzzle
+1 - Water Pouring Puzzle 
 2 - Block World
-Q - Exit
+Exit - Exit the program
 Your choice> """
 
 # Water Pouring Puzzle Inputs
